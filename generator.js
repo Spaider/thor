@@ -1,6 +1,21 @@
 'use strict';
 
-/**
+var jwt = require('jsonwebtoken');
+var crypto = require('crypto')
+
+function getRandomId() {
+  return crypto.randomBytes(16).toString('hex')
+}
+
+function getRandomJwt() {
+    return jwt.sign({
+      userId: getRandomId(),
+      deviceId: getRandomId(),
+      token: getRandomId()
+    }, "hard_coded_jwt_secret_key")
+}
+
+ /**
  * Generate a UTF-8 messages that we will be send to a connected client.
  *
  * @async
@@ -37,6 +52,12 @@ exports.binary = function binary(size, fn) {
   cached = cache[key] = new Buffer(size);
   fn(undefined, cached);
 };
+
+exports.urlQuery = function urlQuery() {
+  return {
+    jwt: getRandomJwt()
+  }
+}
 
 //
 // The following is not needed to create a session file. We don't want to

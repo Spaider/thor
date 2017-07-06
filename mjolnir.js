@@ -1,6 +1,7 @@
 'use strict';
 
 var Socket = require('ws')
+  , querystring = require('querystring')
   , connections = {}
   , concurrent = 0;
 
@@ -39,6 +40,11 @@ process.on('message', function message(task) {
 
   // End of the line, we are gonna start generating new connections.
   if (!task.url) return;
+
+  var url = task.url;
+  if (session['urlQuery']) {
+    url = url + "/?" + querystring.stringify(session['urlQuery']())
+  }
 
   var socket = new Socket(task.url, {
     protocolVersion: protocol
